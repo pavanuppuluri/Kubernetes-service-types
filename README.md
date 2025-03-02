@@ -1,8 +1,9 @@
 # Understanding Kubernetes Service Types and Their Use Cases
 
-Kubernetes provides **four main types of services** to expose applications running in a cluster. Each service type is designed for different use cases.
+- Kubernetes provides **four main types of services** to expose applications running in a cluster.
+- Each service type is designed for different use cases.
 
----
+
 
 ## **1️⃣ ClusterIP (Default)**
 - **Description**: Exposes the service **internally within the cluster**.  
@@ -88,3 +89,34 @@ kubectl get svc my-service
 ```
 curl http://34.90.12.34
 ```
+
+## **4️⃣ ExternalName**
+- **Description**: Maps the service to an external domain name (DNS).
+- **Use Case**: When you need to access an external service (e.g., database or API) using a Kubernetes service.
+- **Example YAML**:
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-service
+spec:
+  type: ExternalName
+  externalName: api.external.com
+```
+
+**Access**:
+```
+nslookup external-service.default.svc.cluster.local
+```
+
+This will resolve to api.external.com.
+
+### Summary
+
+| Service Type   | Exposes Service              | Access From                         | Use Case                        |
+|---------------|-----------------------------|-------------------------------------|---------------------------------|
+| ClusterIP     | Internally in the cluster   | Pods within cluster                | Internal communication         |
+| NodePort      | Exposes on node IP & port   | External clients via `<NodeIP>:<NodePort>` | Basic external access      |
+| LoadBalancer  | External load balancer      | Public Internet                    | Full external access           |
+| ExternalName  | Maps to an external DNS     | Kubernetes DNS lookup              | External service integration   |
+
